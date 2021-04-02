@@ -1,0 +1,18 @@
+CREATE TABLE hockeyPlayer (
+  player_number INTEGER NOT NULL,
+  full_name TEXT NOT NULL
+);
+
+selectAll:
+SELECT * FROM hockeyPlayer;
+
+insert:
+INSERT INTO hockeyPlayer(player_number, full_name)
+VALUES (?, ?);
+
+insertObject:
+INSERT INTO hockeyPlayer(player_number, full_name)
+VALUES?;
+
+deleteAll:
+DELETE FROM hockeyPlayer;
