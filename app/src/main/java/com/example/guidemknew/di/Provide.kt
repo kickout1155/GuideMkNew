@@ -1,26 +1,20 @@
 package com.example.guidemknew.di
 
 import android.content.Context
-import com.example.guidemknew.Database
-import com.example.guidemknew.DatabaseAppQueries
-import com.example.guidemknew.database.ActionDatabaseHeroes
-import com.example.guidemknew.database.HeroesActionDatabaseHeroesImpl
-import com.example.guidemknew.network.HeroesApi
-import com.squareup.sqldelight.android.AndroidSqliteDriver
-import com.squareup.sqldelight.db.SqlDriver
+import com.example.core.data.HeroesRepository
+import com.example.core.data.MainDataSource
+import com.example.core.interactor.GetHeroes
+import com.example.guidemknew.data.KtorHeroesDataSource
+import com.example.guidemknew.data.PreferenceDataSource
+import com.example.guidemknew.data.SqlHeroesDataSource
+import com.example.guidemknew.interactors.Interactors
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
-import io.ktor.client.*
-import io.ktor.client.engine.android.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import kotlinx.serialization.json.Json
-import javax.inject.Singleton
+import javax.inject.Qualifier
 
 //@Module
 //@InstallIn(SingletonComponent::class)
@@ -33,36 +27,72 @@ import javax.inject.Singleton
 //    ): ActionDatabaseHeroes = HeroesActionDatabaseHeroesImpl(context)
 //
 //}
+//
+//@Module
+//@InstallIn(SingletonComponent::class)
+//class ModuleHeroesDb {
+//
+//    @Provides
+//    @Singleton
+//    fun heroesDbProvide(@ApplicationContext context: Context): DatabaseAppQueries {
+//        val driver: SqlDriver =
+//            AndroidSqliteDriver(Database.Schema, context, "HeroesDb.db")
+//        return Database(driver).databaseAppQueries
+//    }
+//}
+//
+//@Module
+//@InstallIn(SingletonComponent::class)
+//class ClientModule {
+//
+//    @Provides
+//    @Singleton
+//    fun clientProvide(): HttpClient {
+//        return HttpClient(Android) {
+//            install(JsonFeature) {
+//                serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
+//                    ignoreUnknownKeys = true
+//                    isLenient = true
+//                })
+//            }
+//        }
+//    }
+//
+//}
 
 
 @Module
-@InstallIn(SingletonComponent::class)
-class ModuleHeroesDb {
+@InstallIn(ViewModelComponent::class)
+class InteractorsModule{
 
     @Provides
-    @Singleton
-    fun heroesDbProvide(@ApplicationContext context: Context): DatabaseAppQueries {
-        val driver: SqlDriver =
-            AndroidSqliteDriver(Database.Schema, context, "HeroesDb.db")
-        return Database(driver).databaseAppQueries
+    fun interactorsProvide(@ApplicationContext context: Context):Interactors{
+        return Interactors(GetHeroes(HeroesRepository(SqlHeroesDataSource(context),SqlHeroesDataSource(context))))
     }
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class LocalVersion
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NetworkVersion
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ClientModule {
+object VersionModule{
 
+    @LocalVersion
     @Provides
-    @Singleton
-    fun clientProvide(): HttpClient {
-        return HttpClient(Android) {
-            install(JsonFeature) {
-                serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                })
-            }
-        }
+    fun localProvide():MainDataSource{
+        return PreferenceDataSource()
     }
 
+    @NetworkVersion
+    @Provides
+    fun networkProvide():MainDataSource{
+        return KtorHeroesDataSource()
+    }
 }
+

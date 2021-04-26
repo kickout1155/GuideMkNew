@@ -1,10 +1,10 @@
-package com.example.guidemknew.modelNetwork
+package com.example.guidemknew.domain
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Heroes(
+data class HeroesNetwork(
     @SerialName("UUID")
     val id: String,
     @SerialName("Name")

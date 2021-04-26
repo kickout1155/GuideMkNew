@@ -1,4 +1,4 @@
-package com.example.guidemknew.base
+package com.example.guidemknew.ui.base
 
 import androidx.annotation.MainThread
 import androidx.annotation.Nullable

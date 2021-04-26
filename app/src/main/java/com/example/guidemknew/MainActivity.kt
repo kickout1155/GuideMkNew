@@ -3,7 +3,7 @@ package com.example.guidemknew
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.example.guidemknew.mainFragment.MainFragment
+import com.example.guidemknew.ui.MainFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

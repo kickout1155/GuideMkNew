@@ -1,4 +1,4 @@
-package com.example.guidemknew.mainFragment
+package com.example.guidemknew.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -19,8 +19,8 @@ private const val COUNT_COLOMN = 3
 @AndroidEntryPoint
 class MainFragment : Fragment() {
 
-    private val adapterHeroesMain = AdapterHeroesMain { position->
-        Toast.makeText(context,position.toString(),Toast.LENGTH_SHORT).show()
+    private val adapterHeroesMain = AdapterHeroesMain { position ->
+        Toast.makeText(context, position.toString(), Toast.LENGTH_SHORT).show()
     }
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
@@ -35,39 +35,51 @@ class MainFragment : Fragment() {
     ): View {
         _binding = MainFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
-        bindRecycler()
-        bindProgressBar()
-        observeMessage()
+        observeListHeroes()
+        observeIsComplete()
+        observeIsNeedComplete()
+        viewModel.click()
         return view
     }
 
-    private fun observeMessage() {
-        viewModel.message.observe(viewLifecycleOwner, {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-        })
-    }
+    private fun observeIsNeedComplete() {
 
-    private fun bindProgressBar() {
+        binding.btnUpdate.setOnClickListener {
+            viewModel.updateData()
+        }
+
         lifecycleScope.launchWhenCreated {
-            viewModel.listPerson
-                .collect {
-                    if (it.size == 0) {
-                        binding.pbDownloadHeroes.visibility = View.VISIBLE
-                        return@collect
-                    }
-                    binding.pbDownloadHeroes.visibility = View.GONE
+            viewModel.isNeedUpdate.collect {
+                if (it){
+                  binding.btnUpdate.visibility = View.VISIBLE
+                } else{
+                    binding.btnUpdate.visibility = View.GONE
                 }
+            }
         }
     }
 
-    private fun bindRecycler() {
+
+    private fun observeIsComplete() {
+        lifecycleScope.launchWhenCreated {
+            viewModel.isComplete.collect {
+                if (it) {
+                    binding.pbDownloadHeroes.visibility = View.GONE
+                } else {
+                    binding.pbDownloadHeroes.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun observeListHeroes() {
         val layoutManager = GridLayoutManager(context, COUNT_COLOMN)
         binding.rvMainFragmentHeroes.layoutManager = layoutManager
         binding.rvMainFragmentHeroes.adapter = adapterHeroesMain
         binding.rvMainFragmentHeroes.visibility = View.GONE
 
         lifecycleScope.launchWhenCreated {
-            viewModel.listPerson
+            viewModel.listHeroes
                 .collect {
                     if (it.size == 0) {
                         return@collect
