@@ -1,15 +1,14 @@
 package com.example.guidemknew.data
 
 import android.content.Context
-import com.example.core.data.HeroesDataSource
-import com.example.core.data.OperationDataSource
-import com.example.core.domain.Heroes
+import com.example.core.data.heroes.HeroesDataSource
+import com.example.core.domain.Hero
 import com.example.guidemknew.Database
 import com.example.guidemknew.DatabaseAppQueries
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 
-class SqlHeroesDataSource(context: Context) : HeroesDataSource, OperationDataSource {
+class SqlHeroesDataSource(context: Context) : HeroesDataSource {
 
     val dbQueries: DatabaseAppQueries
 
@@ -21,10 +20,20 @@ class SqlHeroesDataSource(context: Context) : HeroesDataSource, OperationDataSou
 
     override suspend fun getAllHeroes() = dbQueries.selectAll().executeAsList()
         .map {
-            Heroes(it.id, it.name, it.urlImage)
+            Hero(it.id, it.name, it.urlImage)
         }.toMutableList()
 
+    override suspend fun updateHeroes(heroes: MutableList<Hero>) {
+        TODO("Not yet implemented")
+    }
 
-    override suspend fun clear() = dbQueries.clearDb()
+    override suspend fun updateHeroById(id: String, hero: Hero) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun clearHero() {
+        TODO("Not yet implemented")
+    }
+
 
 }

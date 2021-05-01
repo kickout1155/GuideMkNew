@@ -1,13 +1,10 @@
 package com.example.guidemknew.ui
 
 import androidx.lifecycle.*
-import com.example.core.domain.Heroes
-import com.example.guidemknew.HeroesDb
+import com.example.core.domain.Hero
 import com.example.guidemknew.helpers.VersionHelper
 import com.example.guidemknew.interactors.Interactors
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,9 +17,9 @@ class ViewModelMain @Inject constructor(
     private val versionHelper: VersionHelper
 ) : ViewModel() {
 
-    private val _listHeroes: MutableStateFlow<MutableList<Heroes>> =
+    private val _listHero: MutableStateFlow<MutableList<Hero>> =
         MutableStateFlow(mutableListOf())
-    val listHeroes: StateFlow<MutableList<Heroes>> get() = _listHeroes
+    val listHero: StateFlow<MutableList<Hero>> get() = _listHero
 
     private val _isComplete: MutableStateFlow<Boolean> =
         MutableStateFlow(false)
@@ -33,10 +30,8 @@ class ViewModelMain @Inject constructor(
     val isNeedUpdate: StateFlow<Boolean> get() = _isNeedUpdate
 
 
-
     fun click() {
         viewModelScope.launch {
-            launch {
                 val isCorrect =
                     try {
                         versionHelper.isCorrectVersion()
@@ -47,20 +42,20 @@ class ViewModelMain @Inject constructor(
                 if (!isCorrect) {
                     _isComplete.value = true
                 }
-            }
-            launch {
-                try {
-                    val result = interactors.getHeroes.invoke()
-                    _isComplete.value = true
-                    _listHeroes.value = result
-                } catch (e: Exception) {
-
-                }
-            }
+//            пока закоментим, будем обновлять все данные
+//            launch {
+//                try {
+//                    val result = interactors.getHeroes.invoke()
+//                    _isComplete.value = true
+//                    _listHeroes.value = result
+//                } catch (e: Exception) {
+//
+//                }
+//            }
         }
     }
 
     fun updateData() {
-        TODO("Not yet implemented")
+
     }
 }

@@ -43,11 +43,9 @@ class MainFragment : Fragment() {
     }
 
     private fun observeIsNeedComplete() {
-
         binding.btnUpdate.setOnClickListener {
             viewModel.updateData()
         }
-
         lifecycleScope.launchWhenCreated {
             viewModel.isNeedUpdate.collect {
                 if (it){
@@ -79,7 +77,7 @@ class MainFragment : Fragment() {
         binding.rvMainFragmentHeroes.visibility = View.GONE
 
         lifecycleScope.launchWhenCreated {
-            viewModel.listHeroes
+            viewModel.listHero
                 .collect {
                     if (it.size == 0) {
                         return@collect

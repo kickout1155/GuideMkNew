@@ -1,7 +1,7 @@
 package com.example.guidemknew.di
 
 import android.content.Context
-import com.example.core.data.HeroesRepository
+import com.example.core.data.heroes.HeroesRepository
 import com.example.core.data.MainDataSource
 import com.example.core.interactor.GetHeroes
 import com.example.guidemknew.data.KtorHeroesDataSource
@@ -67,7 +67,7 @@ class InteractorsModule{
 
     @Provides
     fun interactorsProvide(@ApplicationContext context: Context):Interactors{
-        return Interactors(GetHeroes(HeroesRepository(SqlHeroesDataSource(context),SqlHeroesDataSource(context))))
+        return Interactors(GetHeroes(HeroesRepository(SqlHeroesDataSource(context))))
     }
 }
 

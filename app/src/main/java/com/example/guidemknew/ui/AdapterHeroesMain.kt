@@ -2,15 +2,14 @@ package com.example.guidemknew.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.example.core.domain.Heroes
-import com.example.guidemknew.HeroesDb
+import com.example.core.domain.Hero
 import com.example.guidemknew.R
 import com.example.guidemknew.ui.base.BaseAdapter
 
 class AdapterHeroesMain(
     private val click: (Int) -> Unit
 ) :
-BaseAdapter<Heroes, ViewHolderHeroesMain>() {
+BaseAdapter<Hero, ViewHolderHeroesMain>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderHeroesMain {

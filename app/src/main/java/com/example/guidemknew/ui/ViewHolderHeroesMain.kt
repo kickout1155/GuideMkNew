@@ -4,13 +4,12 @@ import android.content.Context
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.core.domain.Heroes
-import com.example.guidemknew.HeroesDb
+import com.example.core.domain.Hero
 import com.example.guidemknew.R
 import com.example.guidemknew.ui.base.BaseViewHolder
 import com.example.guidemknew.databinding.RvMainFragmentHeroesItemBinding
 
-class ViewHolderHeroesMain(itemView: View) : BaseViewHolder<Heroes>(itemView) {
+class ViewHolderHeroesMain(itemView: View) : BaseViewHolder<Hero>(itemView) {
 
     private var _binding: RvMainFragmentHeroesItemBinding? = null
     val binding get() = _binding!!
@@ -26,7 +25,7 @@ class ViewHolderHeroesMain(itemView: View) : BaseViewHolder<Heroes>(itemView) {
         }
     }
 
-    override fun bind(item: Heroes) {
+    override fun bind(item: Hero) {
 
         binding.tvNameHero.text = item.name
         Glide
