@@ -26,7 +26,6 @@ class ViewHolderHeroesMain(itemView: View) : BaseViewHolder<Hero>(itemView) {
     }
 
     override fun bind(item: Hero) {
-
         binding.tvNameHero.text = item.name
         Glide
             .with(context)

@@ -9,8 +9,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class VersionHelper @Inject constructor(
-    @LocalVersion private val firstDataSource: MainDataSource,
-    @NetworkVersion private val secondDataSource: MainDataSource,
+    @LocalVersion private val localDataSource: MainDataSource,
+    @NetworkVersion private val networkDataSource: MainDataSource,
 ) {
     private val scopeIo = CoroutineScope(Dispatchers.IO)
 

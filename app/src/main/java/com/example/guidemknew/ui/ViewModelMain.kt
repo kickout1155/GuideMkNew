@@ -2,8 +2,9 @@ package com.example.guidemknew.ui
 
 import androidx.lifecycle.*
 import com.example.core.domain.Hero
+import com.example.guidemknew.helpers.UpdateHeroesHelper
 import com.example.guidemknew.helpers.VersionHelper
-import com.example.guidemknew.interactors.Interactors
+import com.example.guidemknew.interactors.HeroesInteractors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,8 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ViewModelMain @Inject constructor(
-    private val interactors: Interactors,
-    private val versionHelper: VersionHelper
+    private val interactors: HeroesInteractors,
+    private val versionHelper: VersionHelper,
+    private val updateHeroesHelper: UpdateHeroesHelper
 ) : ViewModel() {
 
     private val _listHero: MutableStateFlow<MutableList<Hero>> =
@@ -32,17 +34,19 @@ class ViewModelMain @Inject constructor(
 
     fun click() {
         viewModelScope.launch {
-                val isCorrect =
-                    try {
-                        versionHelper.isCorrectVersion()
-                    } catch (e: Exception) {
-                        false
-                    }
-                _isNeedUpdate.value = !isCorrect
-                if (!isCorrect) {
-                    _isComplete.value = true
+            val isCorrectVer =
+                try {
+                    versionHelper.isCorrectVersion()
+                } catch (e: Exception) {
+                    false
                 }
-//            пока закоментим, будем обновлять все данные
+            _isNeedUpdate.value = !isCorrectVer
+            if (!isCorrectVer) {
+                _isComplete.value = true
+            }
+            if (isCorrectVer) {
+                return@launch
+            }
 //            launch {
 //                try {
 //                    val result = interactors.getHeroes.invoke()
@@ -56,6 +60,17 @@ class ViewModelMain @Inject constructor(
     }
 
     fun updateData() {
-
+        _isNeedUpdate.value = false
+        _isComplete.value = false
+        viewModelScope.launch {
+            try {
+                updateHeroesHelper.update()
+                _listHero.value = interactors.getHeroes.invoke()
+                _isComplete.value = true
+            } catch (e: Exception) {
+                _isNeedUpdate.value = true
+                val k = 0
+            }
+        }
     }
 }

@@ -5,12 +5,16 @@ import com.example.core.data.MainDataSource
 import com.example.core.domain.Hero
 import com.example.guidemknew.domain.HeroesNetwork
 import io.ktor.client.*
+import io.ktor.client.engine.android.*
+import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 
-class KtorHeroesDataSource : HeroesDataSource,MainDataSource {
+class KtorHeroesDataSource : HeroesDataSource, MainDataSource {
 
     private val baseUrl = "https://www.foodstart.ru"
-    private val httpClient = HttpClient()
+    private val httpClient = HttpClient(Android){
+        install(JsonFeature)
+    }
 
     override suspend fun getAllHeroes(): MutableList<Hero> =
         httpClient.get<MutableList<HeroesNetwork>> {
@@ -20,15 +24,15 @@ class KtorHeroesDataSource : HeroesDataSource,MainDataSource {
         }.toMutableList()
 
     override suspend fun updateHeroes(heroes: MutableList<Hero>) {
-        TODO("Not yet implemented")
+
     }
 
     override suspend fun updateHeroById(id: String, hero: Hero) {
-        TODO("Not yet implemented")
+
     }
 
     override suspend fun clearHero() {
-        TODO("Not yet implemented")
+
     }
 
     override suspend fun getVersion(): Double {

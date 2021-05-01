@@ -1,15 +1,22 @@
 package com.example.guidemknew.di
 
+import com.example.guidemknew.helpers.UpdateHeroesHelper
+import com.example.guidemknew.helpers.UpdateHeroesImpl
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 
-//@Module
-//@InstallIn(ViewModelComponent::class)
-//abstract class ActionDatabaseHeroesModule {
-//
-//    @Binds
-//    abstract fun bindActionDatabaseHeroes(
-//        heroesDbRepository: HeroesActionDatabaseHeroesImpl
-//    ): ActionDatabaseHeroes
-//}
+
+@Module
+@InstallIn(ViewModelComponent::class)
+abstract class UpdateHeroesHelperModule {
+
+    @Binds
+    abstract fun bindUpdateHeroesHelperModule(
+        updateHeroes: UpdateHeroesImpl
+    ): UpdateHeroesHelper
+}
 //
 //@Module
 //@InstallIn(ViewModelComponent::class)

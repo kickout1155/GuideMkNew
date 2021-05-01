@@ -3,11 +3,15 @@ package com.example.guidemknew.di
 import android.content.Context
 import com.example.core.data.heroes.HeroesRepository
 import com.example.core.data.MainDataSource
+import com.example.core.data.heroes.HeroesDataSource
+import com.example.core.interactor.ClearHeroes
 import com.example.core.interactor.GetHeroes
+import com.example.core.interactor.UpdateHeroes
+import com.example.core.interactor.UpdateHeroesById
 import com.example.guidemknew.data.KtorHeroesDataSource
 import com.example.guidemknew.data.PreferenceDataSource
 import com.example.guidemknew.data.SqlHeroesDataSource
-import com.example.guidemknew.interactors.Interactors
+import com.example.guidemknew.interactors.HeroesInteractors
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,11 +67,16 @@ import javax.inject.Qualifier
 
 @Module
 @InstallIn(ViewModelComponent::class)
-class InteractorsModule{
+class InteractorsModule {
 
     @Provides
-    fun interactorsProvide(@ApplicationContext context: Context):Interactors{
-        return Interactors(GetHeroes(HeroesRepository(SqlHeroesDataSource(context))))
+    fun interactorsProvide(@ApplicationContext context: Context): HeroesInteractors {
+        return HeroesInteractors(
+            GetHeroes(HeroesRepository(SqlHeroesDataSource(context))),
+            ClearHeroes(HeroesRepository(SqlHeroesDataSource(context))),
+            UpdateHeroes(HeroesRepository(SqlHeroesDataSource(context))),
+            UpdateHeroesById(HeroesRepository(SqlHeroesDataSource(context)))
+        )
     }
 }
 
@@ -79,20 +88,47 @@ annotation class LocalVersion
 @Retention(AnnotationRetention.BINARY)
 annotation class NetworkVersion
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class SqlHeroesData
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NetworkHeroesData
+
 @Module
 @InstallIn(SingletonComponent::class)
-object VersionModule{
+object VersionModule {
 
     @LocalVersion
     @Provides
-    fun localProvide():MainDataSource{
+    fun localProvide(): MainDataSource {
         return PreferenceDataSource()
     }
 
     @NetworkVersion
     @Provides
-    fun networkProvide():MainDataSource{
+    fun networkProvide(): MainDataSource {
         return KtorHeroesDataSource()
     }
 }
+
+@Module
+@InstallIn(ViewModelComponent::class)
+class UpdateModule {
+
+    @SqlHeroesData
+    @Provides
+    fun sqlUpdateProvide(
+        @ApplicationContext context: Context
+    ): HeroesDataSource = SqlHeroesDataSource(context)
+
+    @NetworkHeroesData
+    @Provides
+    fun networkUpdateProvide():HeroesDataSource = KtorHeroesDataSource()
+
+}
+
+
+
 
